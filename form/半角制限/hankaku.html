@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/destyle.css@4.0.0/destyle.min.css' type='text/css' />
+	<link rel='stylesheet' id='jquery_ui-css' href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/smoothness/jquery-ui.css' type='text/css' media='' />
+	<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js' id='jquery-js'></script>
+	<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js' id='jquery_ui-js'></script>
+	<script type='text/javascript' src='hankaku.js'></script>
+	<title>Document</title>
+</head>
+<style>
+	input[type="button"] {
+		border: 1px solid lightgray;
+		padding: 4px 8px;
+	}
+
+	input[type="text"] {
+		border: 1px solid lightgray;
+		padding: 4px;
+	}
+</style>
+<script>
+	$(function() {
+		console.log('--START--');
+		// console.log($('#txt'));
+		$('#txt')
+		.prop('isIMEon', false)
+// 		.on('keydown', (e) => {
+// 			console.log('--KEY DOWN--');
+// 		});
+		.on('compositionstart', (e) => {
+			console.log('--COMPOSITION START--');
+			// console.log(e);
+			e.target.isIMEon = true;
+		})
+		.on('compositionend', (e) => {
+			console.log('--COMPOSITION END--');;
+			e.target.isIMEon = false;
+			ConvHankaku(e.target);
+		})
+		// .on('compositionupdate', (e) => {
+		// 	console.log('--COMPOSITION UPDATE--');;
+		// })
+		.on('input', (e) => {
+			if(e.target.isIMEon) return;
+
+			console.log('--INPUT--');
+			ConvHankaku(e.target);
+//			console.log(e);
+//			console.log(e.target.value);
+//			console.log(e.target.selectionStart);
+//			console.log(e.target.selectionEnd);
+		});
+	});
+
+	function ConvHankaku(target) {
+		const res = ReflectsConversionTable(target.value, HankakuTable, target.selectionStart);
+		console.log(res);
+		target.value = res.strOut;
+		target.selectionStart = res.cursor
+		target.selectionEnd = res.cursor
+	}
+</script>
+<body style="padding: 16px;">
+	<p><input type="button" id="btn" value="CLICK!!!"/></p>
+	<p><input type="text" id="txt" style="width: 300px; margin-top: 8px;"/></p>
+	<p><input type="text" id="txt2" style="width: 300px; margin-top: 8px;"/></p>
+</body>
+</html>
